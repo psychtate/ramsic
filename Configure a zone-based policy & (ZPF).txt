@@ -1,0 +1,77 @@
+Configure a zone-based policy (ZPF) firewall on R3. 
+Verify ZPF firewall functionality using ping, SSH, and a web browser.
+
+
+create topology accordingly 
+
+configure ospf
+
+R3#en
+#conf t
+#router ospf 1
+#network 192.168.3.0 0.0.0.255 area 0   (give Ip as per ur network widemass is given for subnet- 255.255.255.0)
+
+#network 10.1.1.0 0.0.0.3 area 0    (Subnet - 255.255.255.252 configure ospf to all routers)
+
+SSH
+R3 # en 
+#conf t
+#ip domain-name cisco.com 
+#username cisco privilege 15 secret 12345   (cisco is a username given for R2)
+#line vty 0 4
+#login local
+#transport input ssh
+#crypto key zeroize rsa
+#crypto key generate rsa
+#1024
+
+R2(give the same commands just change the Username form cisco to cisco1)
+
+
+Configure a zone-based policy (ZPF) firewall on R3.
+
+#en
+#conf t
+#license boot module c1900 technology-package securityk9
+#yes
+#exit
+#reload
+#yes
+again (enter)
+
+config # zone security IN-ZONE 
+	# exit
+	#zone security OUT-ZONE
+	#exit
+	#access-list 101 permit ip 192.168.3.0 0.0.0.255 any
+	#class-map type inspect match-all IN-NET-CLASS-MAP
+	#match access-group 101
+	#exit
+	#policy-map type inspect IN-2-OUT-PMAP
+	#class type inspect IN-NET-CLASS-MAP
+	#inspect
+	#exit
+	#exit
+	#zone-pair security IN-2-OUT-ZPAIR source IN-ZONE destination OUT-ZONE
+	#service-policy type inspect IN-2-OUT-PMAP
+	#exit
+	#interface g0/1
+	#zone-member security IN-ZONE 
+	#exit
+	#interface s0/0/1
+	#zone-member security OUT-ZONE
+	#exit
+
+Test
+From internal PC-C, ping the external PC-A server.
+From the PC-C command prompt, ping PC-A at 192.168.1.3. The ping should succeed.
+
+2: From internal PC-C, SSH to the R2 S0/0/1 interface.
+ pc-c> ssh -l cisco1 10.2.2.2  (hit Enter router 1 will be accessed)
+
+b. While the SSH session is active, issue the command show policy-map type inspect zone-pair
+sessions on R3 to view established sessions.
+R3# show policy-map type inspect zone-pair sessions
+
+
+

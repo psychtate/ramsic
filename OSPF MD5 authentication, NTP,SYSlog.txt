@@ -1,0 +1,41 @@
+configure ospf
+
+R3#en
+#conf t
+#router ospf 1
+#network 192.168.3.0 0.0.0.255 area 0   (give Ip as per ur network widemass is given for subnet- 255.255.255.0)
+
+#network 10.1.1.0 0.0.0.3 area 0    (Subnet - 255.255.255.252 configure ospf to all routers)
+
+
+NTP server 
+
+(check if the NTP service is on in the server)
+
+R1 en
+#conf t
+#ntp server 192.168.1.5
+#ntp update-calendar
+#ntp authenticate
+#ntp trusted-key 1
+#ntp authentication-key 1 md5 12345
+#service timestamps log datetime msec
+
+(type there commands as it is to all the Routers)
+test- to see ntp output 
+in router type command 
+>en
+#show clock
+(the updated time will be displayed)
+
+Syslog Server
+
+(check if syslog service in on in the server)
+R1> en
+#conf t
+#logging host 192.168.1.6
+
+(type there commands as it is to all the Routers)
+
+test - the output will be display in servers- sylog (entries will be added)
+

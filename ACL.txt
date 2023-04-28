@@ -1,0 +1,44 @@
+slip6:
+1. Verify the ACL implementation. PC1 (Only FTP). PC2(Only HTTP)
+
+R1(config)# access-list 100 permit tcp 172.22.34.64 0.0.0.31 host 172.22.34.62 eq ftp(21)
+R2(config)# access-list 100 permit tcp 172.22.34.96 0.0.0.31 host 172.22.34.62 eq http(80)
+
+2. Apply the ACL on the correct interface to filter traffic.
+
+in there gig interfaces
+R1(config)# interface gigabitEthernet 0/0
+R1(config-if)# ip access-group 100 in
+
+3. verify ftp
+PC> ftp 172.22.34.62
+
+slip8:
+2> Configure ACL to allow access to routers R1, R2, and R3 to only be permitted 
+from PC-C, the management station. PC-C is also used for connectivity testing 
+to PC-A, which is a server providing DNS, SMTP, FTP, and HTTPS(443) services.
+
+R1(config)# access-list 100 permit tcp "PC-C IP" "Wild-snap" host "server IP" eq  DNS/ SMTP/ FTP/ HTTPS
+in there gig interfaces
+R1(config)# interface gigabitEthernet 0/0
+R1(config-if)# ip access-group 100 in
+
+
+# Configure, Apply and Verify an Extended Named ACL
+
+1. R1(config)# ip access-list extended HTTP_ONLY(its acl name)
+
+2. permit http only
+R1(config-ext-nacl)# permit tcp 172.22.34.96 0.0.0.15 host 172.22.34.62 eq www
+
+3. permit icmp
+Create a second access list statement to permit ICMP (ping, etc.) traffic from PC2 to Server. Note: The
+prompt remains the same and a specific type of ICMP traffic does not need to be specified.
+R1(config-ext-nacl)# permit icmp 172.22.34.96 0.0.0.15 host 172.22.34.62
+All other traffic is denied, by default. Exit out of extended named ACL configuration mode.
+
+4. apply acl to correct interface
+R1(config)# interface gigabitEthernet 0/1
+R1(config-if)# ip access-group HTTP_ONLY in
+
+SUCCESS.....
